@@ -1,0 +1,1 @@
+sudo docker run -it -d -e POSTGRES_PASSWORD=avitopass -p 5555:5432 post_avito

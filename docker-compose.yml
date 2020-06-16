@@ -1,0 +1,13 @@
+services:
+  server:
+    build: AvitoProject/
+    command: 
+    ports:
+      - "5555:5555"
+      - "8080:8080"
+    depends_on:
+      - postgres
+  postgres:
+    build: Postgres/
+    ports:
+      - "5555":"5432"
