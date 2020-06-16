@@ -1,7 +1,7 @@
+version: '3'
 services:
   server:
     build: AvitoProject/
-    command: 
     ports:
       - "5555:5555"
       - "8080:8080"
