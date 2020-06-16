@@ -134,7 +134,7 @@ func (d *db) SelectSellerFromNotice(noticeID int) (sellerID int, err error){
 
 // NewDb returns a new Db instance.
 func NewDb() Db{
-	connStr := "user=postgres password=avitopass dbname=avito sslmode=disable port=5432"
+	connStr := "user=postgres password=avitopass dbname=avito sslmode=disable port=5432 host=composepostgres"
 	dbCon, err := sql.Open("postgres", connStr)
 	if err != nil {
 		log.Fatal(err)
