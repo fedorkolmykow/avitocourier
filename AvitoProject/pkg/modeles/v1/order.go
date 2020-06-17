@@ -23,3 +23,4 @@ type OrderCreation struct{
 	EndAddrID int         `json:"end_addr_id"`
 	NoticeID int          `json:"notice_id"`
 }
+
