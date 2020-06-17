@@ -48,7 +48,7 @@ LEFT JOIN Address AS End_add ON End_add.address_id = Orders.end_address_id
 LEFT JOIN City ON End_add.city_id = City.city_id WHERE Orders.order_id = $1;`
 	insertOrder = `INSERT INTO Orders (courier_id, buyer_id, end_address_id, notice_id, delivery_price)
 	VALUES	
-	($1, $2, $3, $4, $5);`
+	($1, $2, $3, $4, $5) RETURNING order_id;`
 	requestMostFreeCourier = `SELECT Courier.courier_id, 0 as co FROM Courier
 WHERE courier_id not in (SELECT courier_id FROM Orders)
 UNION
@@ -66,7 +66,7 @@ type Db interface {
 	SelectAllOrders(sellerID int) (orders []v1.Order,err error)
 	SelectOrder(orderID int) (order *v1.Order,err error)
 	SelectSellerFromNotice(noticeID int) (sellerID int, err error)
-	InsertOrder(courierID, buyerID, endAddID, noticeID, deliveryPrice int) (err error)
+	InsertOrder(courierID, buyerID, endAddID, noticeID, deliveryPrice int) (orderID int, err error)
 	SelectMostFreeCourier() (courierID int, err error)
 }
 
@@ -111,13 +111,14 @@ func (d *db) SelectOrder(orderID int) (order *v1.Order, err error){
 	return &o, nil
 }
 
-func (d *db) InsertOrder(courierID, buyerID, endAddID, noticeID, deliveryPrice int) (err error){
-	_, err = d.dbCon.Exec(insertOrder, courierID, buyerID, endAddID, noticeID, deliveryPrice)
+func (d *db) InsertOrder(courierID, buyerID, endAddID, noticeID, deliveryPrice int) (orderID int, err error){
+	row := d.dbCon.QueryRow(insertOrder, courierID, buyerID, endAddID, noticeID, deliveryPrice)
+	err = row.Scan(&orderID)
 	if err != nil {
 		log.Println(err)
-		return err
+		return
 	}
-	return nil
+	return
 }
 
 func (d *db) SelectMostFreeCourier() (courierID int, err error){
@@ -134,7 +135,7 @@ func (d *db) SelectSellerFromNotice(noticeID int) (sellerID int, err error){
 
 // NewDb returns a new Db instance.
 func NewDb() Db{
-	connStr := "user=postgres password=avitopass dbname=avito sslmode=disable port=5432 host=composepostgres"
+	connStr := "user=postgres password=avitopass dbname=avito sslmode=disable port=5555"
 	dbCon, err := sql.Open("postgres", connStr)
 	if err != nil {
 		log.Fatal(err)

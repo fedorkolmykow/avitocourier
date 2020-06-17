@@ -15,7 +15,7 @@ type db interface {
 	SelectAllOrders(sellerID int) (orders []v1.Order,err error)
 	SelectOrder(orderID int) (order *v1.Order,err error)
 	SelectSellerFromNotice(noticeID int) (sellerID int, err error)
-	InsertOrder(courierID, buyerID, endAddID, noticeID, deliveryPrice int) (err error)
+	InsertOrder(courierID, buyerID, endAddID, noticeID, deliveryPrice int) (orderID int, err error)
 	SelectMostFreeCourier() (courierID int, err error)
 }
 
@@ -23,7 +23,7 @@ type db interface {
 type Service interface{
 	GetOrder(orderID int) (order *v1.Order, err error)
 	GetAllOrders(sellerID int) (orders []v1.Order, err error)
-	SetOrder(buyerID, endAddrID, noticeID int) (err error)
+	SetOrder(oc *v1.OrderCreation) (orderID int, err error)
 	CalculatePrice(addrID, noticeID int) (price int, err error)
 }
 
@@ -36,19 +36,19 @@ func (s *service) GetOrder(orderID int) (order *v1.Order, err error){
 	return s.dbCon.SelectOrder(orderID)
 }
 
-func (s *service) SetOrder(buyerID, endAddrID, noticeID int) (err error){
-	sellerID, err := s.dbCon.SelectSellerFromNotice(noticeID)
+func (s *service) SetOrder(oc *v1.OrderCreation) (orderID int, err error){
+	sellerID, err := s.dbCon.SelectSellerFromNotice(oc.NoticeID)
 	if err != nil {
 		return
 	}
-	if sellerID == buyerID{
+	if sellerID == oc.BuyerID{
 		err = errors.New("seller and buyer cannot be same")
 		fmt.Println(err)
 		return
 	}
-	deliveryPrice := s.calc.Calculate(endAddrID, noticeID)
+	deliveryPrice := s.calc.Calculate(oc.EndAddrID, oc.NoticeID)
 	courierID, err := s.dbCon.SelectMostFreeCourier()
-	s.dbCon.InsertOrder(courierID, buyerID, endAddrID, noticeID, deliveryPrice)
+	orderID, err = s.dbCon.InsertOrder(courierID, oc.BuyerID, oc.EndAddrID, oc.NoticeID, deliveryPrice)
 	return
 }
 

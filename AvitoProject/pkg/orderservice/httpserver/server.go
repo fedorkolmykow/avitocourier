@@ -13,18 +13,43 @@ import (
 type service interface{
 	GetOrder(orderID int) (order *v1.Order, err error)
 	GetAllOrders(sellerID int) (orders []v1.Order, err error)
-	SetOrder(buyerID, endAddrID, noticeID int) (err error)
+	SetOrder(oc *v1.OrderCreation) (orderID int, err error)
 	CalculatePrice(addrID, noticeID int) (price int, err error)
+}
+
+type serializator interface{
+	DecodeSetOrder(r *http.Request) (oc *v1.OrderCreation, err error)
+	EncodeSetOrder(w http.ResponseWriter, orderID int)
+	EncodeGetDeliveryPrice(w http.ResponseWriter, price int)
+	EncodeGetOrder(w http.ResponseWriter, order *v1.Order)
+	EncodeGetOrders(w http.ResponseWriter, orders []v1.Order)
 }
 
 type server struct{
 	svc service
+	ser serializator
 }
 
 func (s *server) HandleCalculate(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		fmt.Fprintln(w, "GET")
+		endAddrID, err := strconv.Atoi(r.FormValue("end_addr_id"))
+		if err != nil{
+			http.Error(w, http.StatusText(400), http.StatusBadRequest)
+			return
+		}
+		noticeID, err := strconv.Atoi(r.FormValue("notice_id"))
+		if err != nil{
+			http.Error(w, http.StatusText(400), http.StatusBadRequest)
+			return
+		}
+		price, err := s.svc.CalculatePrice(endAddrID, noticeID)
+		if err != nil{
+			http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+			return
+		}
+		s.ser.EncodeGetDeliveryPrice(w , price)
+
 	default:
 		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
 	}
@@ -44,7 +69,7 @@ func (s *server) HandleOrder(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, http.StatusText(404), http.StatusNotFound)
 			return
 		}
-		fmt.Fprintln(w, order)
+		s.ser.EncodeGetOrder(w, order)
 	default:
 		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
 	}
@@ -59,22 +84,18 @@ func (s *server) Handle(w http.ResponseWriter, r *http.Request) {
 func (s *server) HandleOrders(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
-		buyerID, err := strconv.Atoi(r.FormValue("buyer_id"))
+        oc, err := s.ser.DecodeSetOrder(r)
 		if err != nil{
 			http.Error(w, http.StatusText(400), http.StatusBadRequest)
 			return
 		}
-		endAddrID, err := strconv.Atoi(r.FormValue("end_addr_id"))
+		orderID, err := s.svc.SetOrder(oc)
 		if err != nil{
-			http.Error(w, http.StatusText(400), http.StatusBadRequest)
+			http.Error(w, http.StatusText(500), http.StatusInternalServerError)
 			return
 		}
-		noticeID, err := strconv.Atoi(r.FormValue("notice_id"))
-		if err != nil{
-			http.Error(w, http.StatusText(400), http.StatusBadRequest)
-			return
-		}
-		s.svc.SetOrder(buyerID, endAddrID, noticeID)
+		s.ser.EncodeSetOrder(w, orderID)
+
 	case "GET":
 		seller, err := strconv.Atoi(r.FormValue("seller"))
 		if err != nil{
@@ -86,20 +107,20 @@ func (s *server) HandleOrders(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, http.StatusText(404), http.StatusNotFound)
 			return
 		}
-		fmt.Fprintln(w, orders)
+		s.ser.EncodeGetOrders(w, orders)
 	default:
 		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
 	}
 }
 
 // NewServer returns a new mux.Router instance.
-func NewServer(svc service) (httpServer *mux.Router){
-	s := server{svc: svc}
+func NewServer(svc service, ser serializator) (httpServer *mux.Router){
+	s := server{svc: svc, ser: ser}
 	router := mux.NewRouter()
-	//mux := http.NewServeMux()
+
 	router.HandleFunc("/", s.Handle)
 
-	router.HandleFunc("/price", s.HandleCalculate)
+	router.HandleFunc("/orders/price", s.HandleCalculate)
 
 	router.HandleFunc("/orders/{order_id:[0-9]+}", s.HandleOrder)
 
