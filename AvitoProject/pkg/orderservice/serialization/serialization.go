@@ -1,10 +1,11 @@
 package serialization
 
 import (
-	v1 "AvitoProject/pkg/modeles/v1"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+
+	v1 "AvitoProject/pkg/modeles/v1"
 )
 
 // Serializator ...
