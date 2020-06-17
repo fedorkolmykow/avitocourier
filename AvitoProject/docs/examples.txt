@@ -1,0 +1,11 @@
+http://157.245.33.167:8080/orders?seller=1
+http://157.245.33.167:8080/orders/price?end_addr_id=1&notice_id=1
+http://157.245.33.167:8080/orders/0
+
+curl -v \
+  -H "Accept: application/json" \
+  -H "Content-type: application/json" \
+  -X POST \
+  -d '{"buyer_id": 0, "end_addr_id": 0, "notice_id": 0}' \
+  http://157.245.33.167:8080/orders
+
