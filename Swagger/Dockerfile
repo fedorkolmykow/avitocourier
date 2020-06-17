@@ -1,3 +1,3 @@
 FROM quay.io/goswagger/swagger
 COPY . .
-ENTRYPOINT	 swagger serve --no-open swagger.yaml
+ENTRYPOINT	 swagger serve -p 8081 --no-open swagger.yaml
