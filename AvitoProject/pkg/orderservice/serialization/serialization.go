@@ -10,7 +10,7 @@ import (
 
 // Serializator ...
 type Serializator interface {
-	DecodeSetOrder(r *http.Request) (oc *v1.OrderCreation, err error)
+	DecodeSetOrder(r *http.Request) (oc *v1.OrderCreationRequest, err error)
 	EncodeSetOrder(w http.ResponseWriter, orderID int)
 	EncodeGetDeliveryPrice(w http.ResponseWriter, price int)
 	EncodeGetOrder(w http.ResponseWriter, order *v1.Order)
@@ -19,19 +19,9 @@ type Serializator interface {
 
 type serializator struct{}
 
-type setOrderResponse struct {
-	OrderID int `json:"order_id"`
-}
 
-type getDeliveryPriceResponse struct {
-	DeliveryPrice int `json:"delivery_price"`
-}
 
-type getOrders struct {
-	Orders []v1.Order `json:"orders"`
-}
-
-func (c *serializator) DecodeSetOrder(r *http.Request) (oc *v1.OrderCreation, err error) {
+func (c *serializator) DecodeSetOrder(r *http.Request) (oc *v1.OrderCreationRequest, err error) {
 	body, err := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
 	err = json.Unmarshal(body, &oc)
@@ -39,29 +29,29 @@ func (c *serializator) DecodeSetOrder(r *http.Request) (oc *v1.OrderCreation, er
 }
 
 func (c *serializator) EncodeSetOrder(w http.ResponseWriter, orderID int) {
-	r := setOrderResponse{OrderID: orderID}
-	Encode(w, r)
+	r := v1.OrderCreationResponse{OrderID: orderID}
+	encode(w, r)
 	return
 }
 
 func (c *serializator) EncodeGetDeliveryPrice(w http.ResponseWriter, price int) {
-	r := getDeliveryPriceResponse{DeliveryPrice: price}
-	Encode(w, r)
+	r := v1.OrderDeliveryPriceResponse{DeliveryPrice: price}
+	encode(w, r)
 	return
 }
 
 func (c *serializator) EncodeGetOrder(w http.ResponseWriter, order *v1.Order) {
-	Encode(w, order)
+	encode(w, order)
 	return
 }
 
 func (c *serializator) EncodeGetOrders(w http.ResponseWriter, orders []v1.Order) {
-	r := getOrders{Orders: orders}
-	Encode(w, r)
+	r := v1.ShortOrdersResponse{Orders: orders}
+	encode(w, r)
 	return
 }
 
-func Encode(w http.ResponseWriter, r interface{}) {
+func encode(w http.ResponseWriter, r interface{}) {
 	res, err := json.Marshal(&r)
 	if err != nil {
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
