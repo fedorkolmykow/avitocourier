@@ -8,3 +8,7 @@ docker-compose up
 `
 localhost:8081/doc
 `
+Сам проект по url: 
+`
+localhost:8080/
+`
