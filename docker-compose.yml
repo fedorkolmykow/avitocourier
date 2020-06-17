@@ -10,4 +10,8 @@ services:
   postgres:
     container_name: composepostgres
     build: Postgres/
+  swagger:
+    build: Swagger/
+    ports:
+      - "8081:8081"
 

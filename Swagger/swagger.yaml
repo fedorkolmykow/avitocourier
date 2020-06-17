@@ -1,0 +1,199 @@
+swagger: "2.0"
+info:
+  description: "Документация для задания от Авито на стажировку. Подробности можно найти тут https://github.com/avito-tech/safedeal-backend-trainee/"
+  version: "1.0.0"
+  title: "API сервиса курьерской доставки"
+  contact:
+    email: "fedorkolmykow@gmail.com"
+host: "localhost:8080"
+tags:
+- name: "orders"
+  description: "Информация о курьерский доставках"
+schemes:
+- "http"
+paths:
+  /orders:
+    post:
+      tags:
+        - orders
+      summary: "Добавить новую доставку"
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: "#/definitions/OrderCreationRequest"
+      responses:
+        '200':
+          description: "ID добавленного заказа на доставку"
+          schema:
+            $ref: "#/definitions/OrderCreationResponse"
+        '400':
+          description: "Ошибка десериализации json"
+        '500':
+          description: "Внутреняя ошибка сервера"
+    get:
+      tags:
+        - orders
+      summary: "Получить список заказов на доставку"
+      parameters:
+        - name: seller
+          description: "ID продавца"
+          in: query
+          type: integer
+      responses:
+        '200':
+          description: "ID добавленного заказа на доставку"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/ShortOrdersResponse"
+        '400':
+          description: "Не вышло привести переданный параметр к типу int"
+        '404':
+          description: "Не удалось найти заказов"
+        '500':
+          description: "Внутреняя ошибка сервера"
+  /orders/{order_id}:
+    parameters:
+      - type: integer
+        format: int64
+        name: order_id
+        in: path
+        required: true
+    get:
+      tags:
+        - orders
+      summary: "Получить подробное описание заказа"
+      responses:
+        '200':
+          description: "ID добавленного заказа на доставку"
+          schema:
+            $ref: "#/definitions/Order"
+        '400':
+          description: "Не вышло привести переданный параметр к типу int"
+        '404':
+          description: "Не удалось найти заказ"
+        '500':
+          description: "Внутреняя ошибка сервера"
+  /orders/price:
+    get:
+      tags:
+        - orders
+      summary: "Получить цену доставки заказа"
+      parameters:
+        - name: notice_id
+          description: "ID объявления"
+          in: query
+          type: integer      
+        - name: end_addr_id
+          description: "ID адреса для доставки"
+          in: query
+          type: integer   
+      responses:
+        '200':
+          description: "ID добавленного заказа на доставку"
+          schema:
+            $ref: "#/definitions/OrderDeliveryPriceResponse"
+        '500':
+          description: "Внутренняя ошибка сервера"
+        '400':
+          description: "Не вышло привести переданные параметры к типу int"
+
+definitions:
+  ShortOrdersResponse:
+    type: object
+    properties:
+      order_id:
+        type: integer
+      buyer_name:
+        type: string
+      seller_name:
+        type: string
+      price:
+        type: integer
+      delivery_price:
+        type: integer
+      title:
+        type: string
+    required:
+      - order_id
+      - buyer_name
+      - seller_name
+      - price
+      - delivery_price
+      - title
+
+  Order:
+    type: object
+    properties:
+      order_id:
+        type: integer
+      buyer_name:
+        type: string
+      buyer_phone:
+        type: string
+      seller_name:
+        type: string
+      seller_phone:
+        type: string
+      courier_name:
+        type: string
+      courier_phone:
+        type: string
+      city:
+        type: string
+      end_addr:
+        type: string
+      start_addr:
+        type: string
+      price:
+        type: integer
+      delivery_price:
+        type: integer
+      title:
+        type: string
+    required:
+      - order_id
+      - buyer_name
+      - buyer_phone
+      - seller_name
+      - seller_phone
+      - courier_name
+      - courier_phone
+      - city
+      - end_addr
+      - start_addr
+      - price
+      - delivery_price
+      - title
+
+  OrderCreationRequest:
+    type: object
+    required:
+      - notice_id
+      - buyer_id
+      - end_addr_id
+    properties:
+      buyer_id:
+        type: integer
+      end_addr_id:
+        type: integer
+      notice_id:
+        type: integer
+
+        
+  OrderCreationResponse:
+    type: object
+    required:
+      - order_id
+    properties:
+      order_id:
+        type: integer
+        
+  OrderDeliveryPriceResponse:
+    type: object
+    required:
+      - price
+    properties:
+      price:
+        type: integer
