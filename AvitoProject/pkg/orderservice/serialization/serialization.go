@@ -33,7 +33,7 @@ type getOrders struct{
 func (c* serializator) DecodeSetOrder(r *http.Request) (oc *v1.OrderCreation, err error){
 	body, err := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
-	err = json.Unmarshal(body, oc)
+	err = json.Unmarshal(body, &oc)
 	return
 }
 
