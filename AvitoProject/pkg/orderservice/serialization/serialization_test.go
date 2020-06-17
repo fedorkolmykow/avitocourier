@@ -10,10 +10,9 @@ import (
 	"testing"
 )
 
-
 func TestDecodeSetOrder(t *testing.T) {
-    c := NewSerializator()
-    exp_oc := &v1.OrderCreation{
+	c := NewSerializator()
+	exp_oc := &v1.OrderCreation{
 		BuyerID:   1,
 		EndAddrID: 2,
 		NoticeID:  3,
@@ -27,7 +26,7 @@ func TestDecodeSetOrder(t *testing.T) {
 		t.Fatal(err)
 	}
 	req.Header.Set("Content-Type", "application/json")
-    oc, err := c.DecodeSetOrder(req)
+	oc, err := c.DecodeSetOrder(req)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -42,14 +41,14 @@ func TestEncodeSetOrder(t *testing.T) {
 	w := httptest.NewRecorder()
 	orderId := 1
 	exp := `{"order_id":1}`
-    c.EncodeSetOrder(w, orderId)
+	c.EncodeSetOrder(w, orderId)
 	resp := w.Result()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		t.Fatal(err)
 	}
 	bodyStr := string(body)
-	if bodyStr != exp{
+	if bodyStr != exp {
 		t.Errorf("got %v want %v",
 			bodyStr, exp)
 	}

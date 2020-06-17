@@ -9,7 +9,7 @@ import (
 	v1 "AvitoProject/pkg/modeles/v1"
 )
 
-const(
+const (
 	requestOrders = `SELECT 
 	Orders.order_id,  
 	Seller.name,
@@ -63,8 +63,8 @@ WHERE notice_id = $1;`
 
 // Db ...
 type Db interface {
-	SelectAllOrders(sellerID int) (orders []v1.Order,err error)
-	SelectOrder(orderID int) (order *v1.Order,err error)
+	SelectAllOrders(sellerID int) (orders []v1.Order, err error)
+	SelectOrder(orderID int) (order *v1.Order, err error)
 	SelectSellerFromNotice(noticeID int) (sellerID int, err error)
 	InsertOrder(courierID, buyerID, endAddID, noticeID, deliveryPrice int) (orderID int, err error)
 	SelectMostFreeCourier() (courierID int, err error)
@@ -74,12 +74,11 @@ type db struct {
 	dbCon *sql.DB
 }
 
-
-func (d *db) SelectAllOrders(sellerID int) (orders []v1.Order,err error){
+func (d *db) SelectAllOrders(sellerID int) (orders []v1.Order, err error) {
 	orders = []v1.Order{}
 
 	rows, err := d.dbCon.Query(requestOrders, sellerID)
-	if err != nil{
+	if err != nil {
 		log.Println(err)
 		return nil, err
 	}
@@ -97,13 +96,13 @@ func (d *db) SelectAllOrders(sellerID int) (orders []v1.Order,err error){
 	return orders, nil
 }
 
-func (d *db) SelectOrder(orderID int) (order *v1.Order, err error){
-    o := v1.Order{}
+func (d *db) SelectOrder(orderID int) (order *v1.Order, err error) {
+	o := v1.Order{}
 
 	row := d.dbCon.QueryRow(requestOrder, orderID)
 	err = row.Scan(&o.OrderID, &o.SellerPhone, &o.SellerName,
-	&o.BuyerPhone, &o.BuyerName, &o.CourierPhone, &o.CourierName,
-	&o.City, &o.StartAddr, &o.EndAddr, &o.Title, &o.Price, &o.DeliveryPrice)
+		&o.BuyerPhone, &o.BuyerName, &o.CourierPhone, &o.CourierName,
+		&o.City, &o.StartAddr, &o.EndAddr, &o.Title, &o.Price, &o.DeliveryPrice)
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -111,7 +110,7 @@ func (d *db) SelectOrder(orderID int) (order *v1.Order, err error){
 	return &o, nil
 }
 
-func (d *db) InsertOrder(courierID, buyerID, endAddID, noticeID, deliveryPrice int) (orderID int, err error){
+func (d *db) InsertOrder(courierID, buyerID, endAddID, noticeID, deliveryPrice int) (orderID int, err error) {
 	row := d.dbCon.QueryRow(insertOrder, courierID, buyerID, endAddID, noticeID, deliveryPrice)
 	err = row.Scan(&orderID)
 	if err != nil {
@@ -121,20 +120,20 @@ func (d *db) InsertOrder(courierID, buyerID, endAddID, noticeID, deliveryPrice i
 	return
 }
 
-func (d *db) SelectMostFreeCourier() (courierID int, err error){
+func (d *db) SelectMostFreeCourier() (courierID int, err error) {
 	row := d.dbCon.QueryRow(requestMostFreeCourier)
 	err = row.Scan(&courierID)
 	return
 }
 
-func (d *db) SelectSellerFromNotice(noticeID int) (sellerID int, err error){
+func (d *db) SelectSellerFromNotice(noticeID int) (sellerID int, err error) {
 	row := d.dbCon.QueryRow(requestSellerFromNotice, noticeID)
 	err = row.Scan(&sellerID)
 	return
 }
 
 // NewDb returns a new Db instance.
-func NewDb() Db{
+func NewDb() Db {
 	connStr := "user=postgres password=avitopass dbname=avito sslmode=disable port=5432 host=composepostgres"
 	dbCon, err := sql.Open("postgres", connStr)
 	if err != nil {
@@ -146,5 +145,5 @@ func NewDb() Db{
 		log.Fatal(err)
 	}
 
-	return &db{dbCon:dbCon}
+	return &db{dbCon: dbCon}
 }

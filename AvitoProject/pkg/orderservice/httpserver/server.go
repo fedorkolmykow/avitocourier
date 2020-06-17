@@ -10,14 +10,14 @@ import (
 	v1 "AvitoProject/pkg/modeles/v1"
 )
 
-type service interface{
+type service interface {
 	GetOrder(orderID int) (order *v1.Order, err error)
 	GetAllOrders(sellerID int) (orders []v1.Order, err error)
 	SetOrder(oc *v1.OrderCreation) (orderID int, err error)
 	CalculatePrice(addrID, noticeID int) (price int, err error)
 }
 
-type serializator interface{
+type serializator interface {
 	DecodeSetOrder(r *http.Request) (oc *v1.OrderCreation, err error)
 	EncodeSetOrder(w http.ResponseWriter, orderID int)
 	EncodeGetDeliveryPrice(w http.ResponseWriter, price int)
@@ -25,7 +25,7 @@ type serializator interface{
 	EncodeGetOrders(w http.ResponseWriter, orders []v1.Order)
 }
 
-type server struct{
+type server struct {
 	svc service
 	ser serializator
 }
@@ -34,21 +34,21 @@ func (s *server) HandleCalculate(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		endAddrID, err := strconv.Atoi(r.FormValue("end_addr_id"))
-		if err != nil{
+		if err != nil {
 			http.Error(w, http.StatusText(400), http.StatusBadRequest)
 			return
 		}
 		noticeID, err := strconv.Atoi(r.FormValue("notice_id"))
-		if err != nil{
+		if err != nil {
 			http.Error(w, http.StatusText(400), http.StatusBadRequest)
 			return
 		}
 		price, err := s.svc.CalculatePrice(endAddrID, noticeID)
-		if err != nil{
+		if err != nil {
 			http.Error(w, http.StatusText(500), http.StatusInternalServerError)
 			return
 		}
-		s.ser.EncodeGetDeliveryPrice(w , price)
+		s.ser.EncodeGetDeliveryPrice(w, price)
 
 	default:
 		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
@@ -60,12 +60,12 @@ func (s *server) HandleOrder(w http.ResponseWriter, r *http.Request) {
 	case "GET":
 		vars := mux.Vars(r)
 		orderID, err := strconv.Atoi(vars["order_id"])
-		if err != nil{
+		if err != nil {
 			http.Error(w, http.StatusText(400), http.StatusBadRequest)
 			return
 		}
 		order, err := s.svc.GetOrder(orderID)
-		if err != nil{
+		if err != nil {
 			http.Error(w, http.StatusText(404), http.StatusNotFound)
 			return
 		}
@@ -79,18 +79,16 @@ func (s *server) Handle(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "Привет, мир!")
 }
 
-
-
 func (s *server) HandleOrders(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
-        oc, err := s.ser.DecodeSetOrder(r)
-		if err != nil{
+		oc, err := s.ser.DecodeSetOrder(r)
+		if err != nil {
 			http.Error(w, http.StatusText(400), http.StatusBadRequest)
 			return
 		}
 		orderID, err := s.svc.SetOrder(oc)
-		if err != nil{
+		if err != nil {
 			http.Error(w, http.StatusText(500), http.StatusInternalServerError)
 			return
 		}
@@ -98,12 +96,12 @@ func (s *server) HandleOrders(w http.ResponseWriter, r *http.Request) {
 
 	case "GET":
 		seller, err := strconv.Atoi(r.FormValue("seller"))
-		if err != nil{
+		if err != nil {
 			http.Error(w, http.StatusText(400), http.StatusBadRequest)
 			return
 		}
 		orders, err := s.svc.GetAllOrders(seller)
-		if err != nil{
+		if err != nil {
 			http.Error(w, http.StatusText(404), http.StatusNotFound)
 			return
 		}
@@ -114,7 +112,7 @@ func (s *server) HandleOrders(w http.ResponseWriter, r *http.Request) {
 }
 
 // NewServer returns a new mux.Router instance.
-func NewServer(svc service, ser serializator) (httpServer *mux.Router){
+func NewServer(svc service, ser serializator) (httpServer *mux.Router) {
 	s := server{svc: svc, ser: ser}
 	router := mux.NewRouter()
 

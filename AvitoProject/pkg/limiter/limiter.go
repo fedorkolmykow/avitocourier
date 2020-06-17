@@ -9,10 +9,10 @@ import (
 
 // CustomLimiter ...
 type CustomLimiter interface {
-    Limit(next http.Handler) http.Handler
+	Limit(next http.Handler) http.Handler
 }
 
-type customLimiter struct{
+type customLimiter struct {
 	lim *rate.Limiter
 }
 
@@ -27,7 +27,7 @@ func (c *customLimiter) Limit(next http.Handler) http.Handler {
 }
 
 // NewCustomLimiter returns a new CustomLimiter instance.
-func NewCustomLimiter(burst int) CustomLimiter{
+func NewCustomLimiter(burst int) CustomLimiter {
 	lim := rate.NewLimiter(rate.Every(time.Minute), burst)
 	return &customLimiter{lim: lim}
 }

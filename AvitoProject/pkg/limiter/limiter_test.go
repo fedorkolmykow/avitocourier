@@ -6,17 +6,17 @@ import (
 	"testing"
 )
 
-func TestLimit(t *testing.T){
+func TestLimit(t *testing.T) {
 	burst := 10
 	cl := NewCustomLimiter(burst)
 	handler := cl.Limit(http.HandlerFunc(okHandler))
 
-	for i :=0 ; i < burst; i++ {
-	    req, err := http.NewRequest("GET", "/health-check", nil)
-	    if err != nil {
-	    	t.Fatal(err)
-	    }
-	    w := httptest.NewRecorder()
+	for i := 0; i < burst; i++ {
+		req, err := http.NewRequest("GET", "/health-check", nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		w := httptest.NewRecorder()
 		handler.ServeHTTP(w, req)
 		if status := w.Code; status != http.StatusOK {
 			t.Errorf("handler returned wrong status code: got %v want %v",
