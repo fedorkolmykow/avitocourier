@@ -49,7 +49,7 @@ func (s *server) HandleCalculate(w http.ResponseWriter, r *http.Request) {
 		s.ser.EncodeGetDeliveryPrice(w, price)
 }
 
-func (s *server) HandleOrder(w http.ResponseWriter, r *http.Request) {
+func (s *server) HandleOrderGet(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		orderID, err := strconv.Atoi(vars["order_id"])
 		if err != nil {
@@ -107,7 +107,7 @@ func NewServer(svc service, ser serializator) (httpServer *mux.Router) {
 	router.HandleFunc("/orders/price", s.HandleCalculate).
 		Methods("GET")
 
-	router.HandleFunc("/orders/{order_id:[0-9]+}", s.HandleOrder).
+	router.HandleFunc("/orders/{order_id:[0-9]+}", s.HandleOrderGet).
 		Methods("GET")
 
 	router.HandleFunc("/orders", s.HandleOrdersGet).

@@ -21,12 +21,12 @@ paths:
         - name: body
           in: body
           schema:
-            $ref: "#/definitions/orderCreation"
+            $ref: "#/definitions/OrderCreationRequest"
       responses:
         '200':
           description: "ID добавленного заказа на доставку"
           schema:
-            $ref: "#/definitions/orderCreationResp"
+            $ref: "#/definitions/OrderCreationResponse"
         '400':
           description: "Ошибка десериализации json"
         '500':
@@ -46,7 +46,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: "#/definitions/short_order"
+              $ref: "#/definitions/ShortOrdersResponse"
         '400':
           description: "Не вышло привести переданный параметр к типу int"
         '404':
@@ -68,7 +68,7 @@ paths:
         '200':
           description: "ID добавленного заказа на доставку"
           schema:
-            $ref: "#/definitions/order"
+            $ref: "#/definitions/Order"
         '400':
           description: "Не вышло привести переданный параметр к типу int"
         '404':
@@ -93,7 +93,7 @@ paths:
         '200':
           description: "ID добавленного заказа на доставку"
           schema:
-            $ref: "#/definitions/orderDeliveryPrice"
+            $ref: "#/definitions/OrderDeliveryPriceResponse"
         '500':
           description: "Внутренняя ошибка сервера"
         '400':

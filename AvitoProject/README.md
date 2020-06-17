@@ -8,10 +8,10 @@ All URIs are relative to *http://localhost:8080*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*OrdersApi* | **OrdersGet** | **Get** /orders | Получить список заказов на доставку
-*OrdersApi* | **OrdersOrderIdGet** | **Get** /orders/{order_id} | Получить подробное описание заказа
-*OrdersApi* | **OrdersPost** | **Post** /orders | Добавить новую доставку
-*OrdersApi* | **OrdersPriceGet** | **Get** /orders/price | Получить цену доставки заказа
+*OrdersApi* | **HandleOrdersGet** | **Get** /orders | Получить список заказов на доставку
+*OrdersApi* | **HandleOrderGet** | **Get** /orders/{order_id} | Получить подробное описание заказа
+*OrdersApi* | **HandleOrdersPost** | **Post** /orders | Добавить новую доставку
+*OrdersApi* | **HandleCalculate** | **Get** /orders/price | Получить цену доставки заказа
 
 
 ## Documentation For Models

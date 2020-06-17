@@ -11,7 +11,7 @@ Method | HTTP request | Description
 
 
 # **OrdersGet**
-> []ShortOrder OrdersGet(ctx, optional)
+> []ShortOrdersResponse OrdersGet(ctx, optional)
 Получить список заказов на доставку
 
 ### Required Parameters
@@ -30,7 +30,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**[]ShortOrder**](short_order.md)
+[**[]ShortOrdersResponse**](ShortOrdersResponse.md)
 
 ### Authorization
 
@@ -56,7 +56,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**Order**](order.md)
+[**Order**](Order.md)
 
 ### Authorization
 
@@ -70,7 +70,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **OrdersPost**
-> OrderCreationResp OrdersPost(ctx, optional)
+> OrderCreationResponse OrdersPost(ctx, optional)
 Добавить новую доставку
 
 ### Required Parameters
@@ -85,11 +85,11 @@ Optional parameters are passed through a pointer to a OrdersApiOrdersPostOpts st
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**optional.Interface of OrderCreation**](OrderCreation.md)|  | 
+ **body** | [**optional.Interface of OrderCreationRequest**](OrderCreationRequest.md)|  | 
 
 ### Return type
 
-[**OrderCreationResp**](orderCreationResp.md)
+[**OrderCreationResponse**](OrderCreationResponse.md)
 
 ### Authorization
 
@@ -103,7 +103,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **OrdersPriceGet**
-> OrderDeliveryPrice OrdersPriceGet(ctx, optional)
+> OrderDeliveryPriceResponse OrdersPriceGet(ctx, optional)
 Получить цену доставки заказа
 
 ### Required Parameters
@@ -123,7 +123,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**OrderDeliveryPrice**](orderDeliveryPrice.md)
+[**OrderDeliveryPriceResponse**](OrderDeliveryPriceResponse.md)
 
 ### Authorization
 
