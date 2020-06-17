@@ -109,8 +109,6 @@ definitions:
         type: string
       seller_name:
         type: string
-      courier_name:
-        type: string
       price:
         type: integer
       delivery_price:
@@ -121,7 +119,6 @@ definitions:
       - order_id
       - buyer_name
       - seller_name
-      - courier_name
       - price
       - delivery_price
       - title
