@@ -41,6 +41,7 @@ func TestEncodeSetOrder(t *testing.T) {
 	c := NewSerializator()
 	w := httptest.NewRecorder()
 	orderId := 1
+	exp := `{"order_id":1}`
     c.EncodeSetOrder(w, orderId)
 	resp := w.Result()
 	body, err := ioutil.ReadAll(resp.Body)
@@ -48,20 +49,23 @@ func TestEncodeSetOrder(t *testing.T) {
 		t.Fatal(err)
 	}
 	bodyStr := string(body)
-	//if bodyStr != `{"":1}`
+	if bodyStr != exp{
+		t.Errorf("got %v want %v",
+			bodyStr, exp)
+	}
 }
 
-func TestEncodeGetDeliveryPrice(t *testing.T) {
-	c := NewSerializator()
-
-}
-
-func TestEncodeGetOrder(t *testing.T) {
-	c := NewSerializator()
-
-}
-
-func TestEncodeGetOrders(t *testing.T) {
-	c := NewSerializator()
-
-}
+//func TestEncodeGetDeliveryPrice(t *testing.T) {
+//	c := NewSerializator()
+//
+//}
+//
+//func TestEncodeGetOrder(t *testing.T) {
+//	c := NewSerializator()
+//
+//}
+//
+//func TestEncodeGetOrders(t *testing.T) {
+//	c := NewSerializator()
+//
+//}
