@@ -100,7 +100,7 @@ paths:
           description: "Не вышло привести переданные параметры к типу int"
 
 definitions:
-  short_order:
+  ShortOrdersResponse:
     type: object
     properties:
       order_id:
@@ -123,7 +123,7 @@ definitions:
       - delivery_price
       - title
 
-  order:
+  Order:
     type: object
     properties:
       order_id:
@@ -167,7 +167,7 @@ definitions:
       - delivery_price
       - title
 
-  orderCreation:
+  OrderCreationRequest:
     type: object
     required:
       - notice_id
@@ -182,7 +182,7 @@ definitions:
         type: integer
 
         
-  orderCreationResp:
+  OrderCreationResponse:
     type: object
     required:
       - order_id
@@ -190,7 +190,7 @@ definitions:
       order_id:
         type: integer
         
-  orderDeliveryPrice:
+  OrderDeliveryPriceResponse:
     type: object
     required:
       - price

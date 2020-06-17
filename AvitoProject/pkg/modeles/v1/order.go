@@ -17,9 +17,24 @@ type Order struct {
 	DeliveryPrice string `json:"delivery_price"`
 }
 
-// OrderCreation ...
-type OrderCreation struct {
+// OrderCreationRequest ...
+type OrderCreationRequest struct {
 	BuyerID   int `json:"buyer_id"`
 	EndAddrID int `json:"end_addr_id"`
 	NoticeID  int `json:"notice_id"`
+}
+
+// OrderCreationResponse ...
+type OrderCreationResponse struct {
+	OrderID int `json:"order_id"`
+}
+
+// OrderDeliveryPriceResponse ...
+type OrderDeliveryPriceResponse struct {
+	DeliveryPrice int `json:"delivery_price"`
+}
+
+// ShortOrdersResponse ...
+type ShortOrdersResponse struct {
+	Orders []Order `json:"orders"`
 }

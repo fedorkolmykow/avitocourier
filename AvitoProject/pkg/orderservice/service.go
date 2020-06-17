@@ -23,7 +23,7 @@ type db interface {
 type Service interface {
 	GetOrder(orderID int) (order *v1.Order, err error)
 	GetAllOrders(sellerID int) (orders []v1.Order, err error)
-	SetOrder(oc *v1.OrderCreation) (orderID int, err error)
+	SetOrder(oc *v1.OrderCreationRequest) (orderID int, err error)
 	CalculatePrice(addrID, noticeID int) (price int, err error)
 }
 
@@ -36,7 +36,7 @@ func (s *service) GetOrder(orderID int) (order *v1.Order, err error) {
 	return s.dbCon.SelectOrder(orderID)
 }
 
-func (s *service) SetOrder(oc *v1.OrderCreation) (orderID int, err error) {
+func (s *service) SetOrder(oc *v1.OrderCreationRequest) (orderID int, err error) {
 	sellerID, err := s.dbCon.SelectSellerFromNotice(oc.NoticeID)
 	if err != nil {
 		return

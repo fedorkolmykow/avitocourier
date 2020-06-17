@@ -1,6 +1,6 @@
 # Go API client for swagger
 
-Заданиe от Авито на стажировку. Подробности можно найти тут https://github.com/avito-tech/safedeal-backend-trainee/
+Задание от Авито на стажировку. Подробности можно найти тут https://github.com/avito-tech/safedeal-backend-trainee/
 
 ## Documentation for API Endpoints
 
@@ -17,10 +17,10 @@ Class | Method | HTTP request | Description
 ## Documentation For Models
 
  - [Order](docs/Order.md)
- - [OrderCreation](docs/OrderCreation.md)
- - [OrderCreationResp](docs/OrderCreationResp.md)
- - [OrderDeliveryPrice](docs/OrderDeliveryPrice.md)
- - [ShortOrder](docs/ShortOrder.md)
+ - [OrderCreationRequest](docs/OrderCreationRequest.md)
+ - [OrderCreationResponse](docs/OrderCreationResponse.md)
+ - [OrderDeliveryPriceResponse](docs/OrderDeliveryPriceResponse.md)
+ - [ShortOrdersResponse](docs/ShortOrdersResponse.md)
 
 
 ## Documentation For Authorization
